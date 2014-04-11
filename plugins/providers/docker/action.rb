@@ -12,6 +12,7 @@ module VagrantPlugins
           b.use Call, IsState, :not_created do |env, b2|
             # If the VM is NOT created yet, then do the setup steps
             if env[:result]
+              b2.use HostMachine
               b2.use HandleBox
               b2.use EnvSet, :port_collision_repair => true
               b2.use HandleForwardedPortCollisions
@@ -186,6 +187,7 @@ module VagrantPlugins
       autoload :Create, action_root.join("create")
       autoload :Destroy, action_root.join("destroy")
       autoload :ForwardPorts, action_root.join("forward_ports")
+      autoload :HostMachine, action_root.join("host_machine")
       autoload :Stop, action_root.join("stop")
       autoload :PrepareNFSValidIds, action_root.join("prepare_nfs_valid_ids")
       autoload :PrepareNFSSettings, action_root.join("prepare_nfs_settings")

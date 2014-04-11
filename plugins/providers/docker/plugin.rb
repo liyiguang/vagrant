@@ -3,6 +3,7 @@ module VagrantPlugins
     autoload :Action, File.expand_path("../action", __FILE__)
     autoload :Driver, File.expand_path("../driver", __FILE__)
     autoload :Errors, File.expand_path("../errors", __FILE__)
+    autoload :Util, File.expand_path("../util", __FILE__)
 
     class Plugin < Vagrant.plugin("2")
       name "docker-provider"
