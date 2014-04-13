@@ -11,6 +11,8 @@ en:
       host. You'll see the output of the `vagrant up` for this VM below.
 
     messages:
+      destroying: |-
+        Deleting the container...
       not_created: |-
         The container hasn't been created yet.
       not_running: |-
@@ -37,6 +39,11 @@ en:
         create the environment. If a machine is not created, only the
         default provider will be shown. So if a provider is not listed,
         then the machine is not created for that environment.
+      stopped: |-
+        The container is created but not running. You can run it again
+        with `vagrant up`. If the container always goes to "stopped"
+        right away after being started, it is because the command being
+        run exits and doesn't keep running.
 
     errors:
       config:

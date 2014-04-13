@@ -3,6 +3,12 @@ module VagrantPlugins
     class Config < Vagrant.plugin("2", :config)
       attr_accessor :image, :cmd, :ports, :volumes, :privileged
 
+      # Additional arguments to pass to `docker run` when creating
+      # the container for the first time. This is an array of args.
+      #
+      # @return [Array<String>]
+      attr_accessor :create_args
+
       # True if the Docker container exposes SSH access. If this is true,
       # then Vagrant can do a bunch more things like setting the hostname,
       # provisioning, etc.
@@ -32,6 +38,7 @@ module VagrantPlugins
 
       def initialize
         @cmd        = UNSET_VALUE
+        @create_args = []
         @has_ssh    = UNSET_VALUE
         @image      = UNSET_VALUE
         @ports      = []
@@ -43,6 +50,7 @@ module VagrantPlugins
 
       def finalize!
         @cmd        = [] if @cmd == UNSET_VALUE
+        @create_args = [] if @create_args == UNSET_VALUE
         @has_ssh    = false if @has_ssh == UNSET_VALUE
         @image      = nil if @image == UNSET_VALUE
         @privileged = false if @privileged == UNSET_VALUE

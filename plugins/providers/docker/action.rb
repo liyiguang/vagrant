@@ -73,6 +73,12 @@ module VagrantPlugins
       # the virtual machine, gracefully or by force.
       def self.action_halt
         Vagrant::Action::Builder.new.tap do |b|
+          b.use Call, IsState, :host_state_unknown do |env, b2|
+            if env[:result]
+              b2.use HostMachine
+            end
+          end
+
           b.use Call, IsState, :not_created do |env, b2|
             if env[:result]
               b2.use Message, I18n.t("docker_provider.messages.not_created")
@@ -110,6 +116,12 @@ module VagrantPlugins
       # freeing the resources of the underlying virtual machine.
       def self.action_destroy
         Vagrant::Action::Builder.new.tap do |b|
+          b.use Call, IsState, :host_state_unknown do |env, b2|
+            if env[:result]
+              b2.use HostMachine
+            end
+          end
+
           b.use Call, IsState, :not_created do |env, b2|
             if env[:result]
               b2.use Message, I18n.t("docker_provider.messages.not_created")

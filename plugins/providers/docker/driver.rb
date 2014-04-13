@@ -26,6 +26,7 @@ module VagrantPlugins
         run_cmd += volumes.map { |v| ['-v', v.to_s] }
         run_cmd += %W(--privileged) if params[:privileged]
         run_cmd += %W(-h #{params[:hostname]}) if params[:hostname]
+        run_cmd += params[:extra_args] if params[:extra_args]
         run_cmd += [image, cmd]
 
         execute(*run_cmd.flatten).chomp

@@ -37,13 +37,14 @@ module VagrantPlugins
           container_name << "_#{Time.now.to_i}"
 
           {
-            image:      @provider_config.image,
             cmd:        @provider_config.cmd,
-            ports:      forwarded_ports,
-            name:       container_name,
+            extra_args: @provider_config.create_args,
             hostname:   @machine_config.vm.hostname,
+            image:      @provider_config.image,
+            name:       container_name,
+            ports:      forwarded_ports,
+            privileged: @provider_config.privileged,
             volumes:    @provider_config.volumes,
-            privileged: @provider_config.privileged
           }
         end
 
