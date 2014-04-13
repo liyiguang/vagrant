@@ -24,6 +24,18 @@ en:
       container_ready: |-
         Container started and ready for use!
 
+    status:
+      host_state_unknown: |-
+        The host VM for the Docker containers appears to not be running
+        or is currently inaccessible. Because of this, we can't determine
+        the state of the containers on that host. Run `vagrant up` to
+        bring up the host VM again.
+      not_created: |-
+        The environment has not yet been created. Run `vagrant up` to
+        create the environment. If a machine is not created, only the
+        default provider will be shown. So if a provider is not listed,
+        then the machine is not created for that environment.
+
     errors:
       config:
         cmd_not_set: |-

@@ -1,5 +1,6 @@
 require "log4r"
 
+require "vagrant/action/builtin/mixin_synced_folders"
 require "vagrant/util/silence_warnings"
 
 module VagrantPlugins
@@ -65,6 +66,30 @@ module VagrantPlugins
           host_env.machine(host_machine_name, :virtualbox)
         end
 
+        # Make sure we swap all the synced folders out from our
+        # machine so that we do a double synced folder: normal synced
+        # folders to the host machine, then Docker volumes within that host.
+        sf_helper_klass = Class.new do
+          include Vagrant::Action::Builtin::MixinSyncedFolders
+        end
+        sf_helper   = sf_helper_klass.new
+        our_folders = sf_helper.synced_folders(@machine)
+        if our_folders[:docker]
+          our_folders[:docker].each do |id, data|
+            data = data.dup
+            data.delete(:type)
+
+            # Add them to the host machine
+            @host_vm.config.vm.synced_folder(
+              data[:hostpath],
+              data[:guestpath],
+              data)
+
+            # Remove from our machine
+            @machine.config.vm.synced_folders.delete(id)
+          end
+        end
+
         @host_vm
       end
 
@@ -99,12 +124,14 @@ module VagrantPlugins
 
       def state
         state_id = nil
-        state_id = :not_created if !@machine.id || !driver.created?(@machine.id)
+        state_id = :host_state_unknown if host_vm? && !host_vm.communicate.ready?
+        state_id = :not_created if !state_id && \
+          (!@machine.id || !driver.created?(@machine.id))
         state_id = driver.state(@machine.id) if @machine.id && !state_id
         state_id = :unknown if !state_id
 
         short = state_id.to_s.gsub("_", " ")
-        long  = I18n.t("vagrant.commands.status.#{state_id}")
+        long  = I18n.t("docker_provider.status.#{state_id}")
 
         Vagrant::MachineState.new(state_id, short, long)
       end

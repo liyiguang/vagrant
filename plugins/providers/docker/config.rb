@@ -47,7 +47,7 @@ module VagrantPlugins
         errors = _detected_errors
 
         # TODO: Detect if base image has a CMD / ENTRYPOINT set before erroring out
-        errors << I18n.t("docker_provider.errors.config.cmd_not_set")   if @cmd == UNSET_VALUE
+        errors << I18n.t("docker_provider.errors.config.cmd_not_set") if @cmd == UNSET_VALUE
 
         { "docker provider" => errors }
       end
