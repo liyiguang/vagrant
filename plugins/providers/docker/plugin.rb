@@ -5,6 +5,10 @@ module VagrantPlugins
     autoload :Errors, File.expand_path("../errors", __FILE__)
     autoload :Util, File.expand_path("../util", __FILE__)
 
+    module Executor
+      autoload :Local, File.expand_path("../executor/local", __FILE__)
+    end
+
     class Plugin < Vagrant.plugin("2")
       name "docker-provider"
       description <<-EOF

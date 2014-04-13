@@ -21,11 +21,16 @@ module VagrantPlugins
             return @app.call(env)
           end
 
+          return @app.call(env)
           env[:machine].ui.output(I18n.t(
             "docker_provider.host_machine_needed"))
 
           # TODO(mitchellh): process-level lock so that we don't
           # step on parallel Vagrant's toes.
+
+          # TODO(mitchellh): copy the default Vagrantfile to the env
+          # data dir so that we aren't writing into Vagrant's install
+          # directory, which we can't do.
 
           # Get the path to the Vagrantfile that we're going to use
           vf_path = env[:machine].provider_config.vagrant_vagrantfile
