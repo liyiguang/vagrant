@@ -29,8 +29,8 @@ module VagrantPlugins
           if code != 0
             raise Errors::ExecuteError,
               command: cmd,
-              stderr: stderr,
-              stdout: stdout
+              stderr: stderr.chomp,
+              stdout: stdout.chomp
           end
 
           stdout

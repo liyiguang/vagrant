@@ -12,8 +12,8 @@ module VagrantPlugins
           b.use Call, IsState, :not_created do |env, b2|
             # If the VM is NOT created yet, then do the setup steps
             if env[:result]
-              b2.use HostMachine
               b2.use HandleBox
+              b2.use HostMachine
               b2.use EnvSet, :port_collision_repair => true
               b2.use HandleForwardedPortCollisions
               b2.use Provision

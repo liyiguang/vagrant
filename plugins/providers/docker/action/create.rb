@@ -16,9 +16,15 @@ module VagrantPlugins
 
           guard_cmd_configured!
 
+          params = create_params
+
           cid = ''
           @@mutex.synchronize do
-            cid = @driver.create(create_params)
+            env[:ui].output(I18n.t("docker_provider.creating"))
+            env[:ui].detail(" Name: #{params[:name]}")
+            env[:ui].detail("Image: #{params[:image]}")
+
+            cid = @driver.create(params)
           end
 
           @machine.id = cid

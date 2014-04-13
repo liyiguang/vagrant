@@ -39,6 +39,10 @@ module VagrantPlugins
       def host_vm
         return @host_vm if @host_vm
 
+        # TODO(mitchellh): copy the default Vagrantfile to the env
+        # data dir so that we aren't writing into Vagrant's install
+        # directory, which we can't do.
+
         vf_path = @machine.provider_config.vagrant_vagrantfile
         vf_path ||= File.expand_path("../hostmachine/Vagrantfile", __FILE__)
         vf_file = File.basename(vf_path)

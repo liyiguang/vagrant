@@ -1,5 +1,7 @@
 en:
   docker_provider:
+    creating: |-
+      Creating the container...
     host_machine_needed: |-
       Docker host is required. One will be created if necessary...
     host_machine_ready: |-

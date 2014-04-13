@@ -27,10 +27,6 @@ module VagrantPlugins
           # TODO(mitchellh): process-level lock so that we don't
           # step on parallel Vagrant's toes.
 
-          # TODO(mitchellh): copy the default Vagrantfile to the env
-          # data dir so that we aren't writing into Vagrant's install
-          # directory, which we can't do.
-
           host_machine = env[:machine].provider.host_vm
 
           # See if the machine is ready already.
@@ -48,7 +44,6 @@ module VagrantPlugins
           env[:machine].ui.detail(
             I18n.t("docker_provider.host_machine_starting"))
           env[:machine].ui.detail(" ")
-
           host_machine.with_ui(proxy_ui) do
             host_machine.action(:up)
           end
