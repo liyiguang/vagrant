@@ -16,14 +16,31 @@ module VagrantPlugins
             "#{quote}#{::Vagrant::Util::ShellQuote.escape(a, quote)}#{quote}"
           end.join(" ")
 
+          # Add a start fence so we know when to start reading output.
+          # We have to do this because boot2docker outputs a login shell
+          # boot2docker version that we get otherwise and messes up output.
+          start_fence = "========== VAGRANT DOCKER BEGIN =========="
+          ssh_cmd     = "echo \"#{start_fence}\"; #{cmd}"
+
           stderr = ""
           stdout = ""
+          fenced = false
           comm   = @host_machine.communicate
-          code   = comm.execute(cmd, error_check: false) do |type, data|
+          code   = comm.execute(ssh_cmd, error_check: false) do |type, data|
             next if ![:stdout, :stderr].include?(type)
-            block.call(type, data) if block
             stderr << data if type == :stderr
             stdout << data if type == :stdout
+
+            if !fenced
+              index = stdout.index(start_fence)
+              if index
+                index += start_fence.length
+                stdout = stdout[index..-1]
+                stdout.chomp!
+              end
+            end
+
+            block.call(type, data) if block && fenced
           end
 
           if code != 0
@@ -33,7 +50,7 @@ module VagrantPlugins
               stdout: stdout.chomp
           end
 
-          stdout
+          stdout.chomp
         end
       end
     end

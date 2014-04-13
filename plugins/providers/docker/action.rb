@@ -26,6 +26,7 @@ module VagrantPlugins
               b2.use Create
               b2.use action_boot
             else
+              b2.use HostMachine
               b2.use PrepareNFSValidIds
               b2.use SyncedFolderCleanup
               b2.use SyncedFolders

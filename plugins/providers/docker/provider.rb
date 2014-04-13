@@ -80,10 +80,12 @@ module VagrantPlugins
             data.delete(:type)
 
             # Add them to the host machine
+=begin
             @host_vm.config.vm.synced_folder(
               data[:hostpath],
               data[:guestpath],
               data)
+=end
 
             # Remove from our machine
             @machine.config.vm.synced_folders.delete(id)
