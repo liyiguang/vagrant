@@ -1,3 +1,5 @@
+require "fileutils"
+
 require "log4r"
 
 require "vagrant/action/builtin/mixin_synced_folders"
@@ -40,18 +42,25 @@ module VagrantPlugins
       def host_vm
         return @host_vm if @host_vm
 
-        # TODO(mitchellh): copy the default Vagrantfile to the env
-        # data dir so that we aren't writing into Vagrant's install
-        # directory, which we can't do.
+        # TODO(mitchellh): process-wide lock
 
-        vf_path = @machine.provider_config.vagrant_vagrantfile
-        vf_path ||= File.expand_path("../hostmachine/Vagrantfile", __FILE__)
+        vf_path           = @machine.provider_config.vagrant_vagrantfile
+        host_machine_name = @machine.provider_config.vagrant_machine
+        if !vf_path
+          # We don't have a Vagrantfile path set, so we're going to use
+          # the default but we need to copy it into the data dir so that
+          # we don't write into our installation dir (we can't).
+          default_path = File.expand_path("../hostmachine/Vagrantfile", __FILE__)
+          vf_path      = @machine.env.data_dir.join("docker-host", "Vagrantfile")
+          vf_path.dirname.mkpath
+          FileUtils.cp(default_path, vf_path)
+
+          # Set the machine name since we hardcode that for the default
+          host_machine_name = :default
+        end
+
         vf_file = File.basename(vf_path)
         vf_path = File.dirname(vf_path)
-
-        # The name of the machine we want
-        host_machine_name = @machine.provider_config.vagrant_machine
-        host_machine_name ||= :default
 
         # Create the env to manage this machine
         @host_vm = Vagrant::Util::SilenceWarnings.silence! do
