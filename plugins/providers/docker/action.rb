@@ -9,10 +9,10 @@ module VagrantPlugins
       def self.action_up
         Vagrant::Action::Builder.new.tap do |b|
           b.use ConfigValidate
+          b.use HandleBox
 
           b.use Call, IsState, :host_state_unknown do |env, b2|
             if env[:result]
-              b2.use HandleBox
               b2.use HostMachine
             end
           end
