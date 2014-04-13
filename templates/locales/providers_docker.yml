@@ -1,5 +1,13 @@
 en:
   docker_provider:
+    host_machine_needed: |-
+      Docker host is required. One will be created if necessary...
+    host_machine_ready: |-
+      Docker host VM is already ready.
+    host_machine_starting: |-
+      Vagrant will now create or start a local VM to act as the Docker
+      host. You'll see the output of the `vagrant up` for this VM below.
+
     messages:
       not_created: |-
         The container hasn't been created yet.
