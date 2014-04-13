@@ -16,12 +16,11 @@ module VagrantPlugins
         end
 
         def call(env)
-          if !Util.needs_host_machine?
+          if !env[:machine].provider.host_vm?
             @logger.info("No host machine needed.")
             return @app.call(env)
           end
 
-          return @app.call(env)
           env[:machine].ui.output(I18n.t(
             "docker_provider.host_machine_needed"))
 
@@ -32,28 +31,7 @@ module VagrantPlugins
           # data dir so that we aren't writing into Vagrant's install
           # directory, which we can't do.
 
-          # Get the path to the Vagrantfile that we're going to use
-          vf_path = env[:machine].provider_config.vagrant_vagrantfile
-          vf_path ||= File.expand_path("../../hostmachine/Vagrantfile", __FILE__)
-          vf_file = File.basename(vf_path)
-          vf_path = File.dirname(vf_path)
-
-          # The name of the machine we want
-          host_machine_name = env[:machine].provider_config.vagrant_machine
-          host_machine_name ||= :default
-
-          # Create the env to manage this machine
-          host_machine = Vagrant::Util::SilenceWarnings.silence! do
-            host_env = Vagrant::Environment.new(
-              cwd: vf_path,
-              home_path: env[:machine].env.home_path,
-              ui_class: env[:machine].env.ui_class,
-              vagrantfile_name: vf_file,
-            )
-
-            # TODO(mitchellh): configure the provider of this machine somehow
-            host_env.machine(host_machine_name, :virtualbox)
-          end
+          host_machine = env[:machine].provider.host_vm
 
           # See if the machine is ready already.
           if host_machine.communicate.ready?

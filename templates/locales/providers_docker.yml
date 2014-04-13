@@ -33,6 +33,16 @@ en:
         and try again.
       docker_provider_image_not_configured: |-
         The base Docker image has not been set for the '%{name}' VM!
+      execute_error: |-
+        A Docker command executed by Vagrant didn't complete successfully!
+        The command run along with the output from the command is shown
+        below.
+
+        Command: %{command}
+
+        Stderr: %{stderr}
+
+        Stdout: %{stdout}
       synced_folder_non_docker: |-
         The "docker" synced folder type can't be used because the  provider
         in use is not Docker. This synced folder type only works with the
