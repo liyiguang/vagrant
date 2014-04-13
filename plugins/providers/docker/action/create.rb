@@ -27,6 +27,8 @@ module VagrantPlugins
             cid = @driver.create(params)
           end
 
+          env[:ui].detail(" \n"+I18n.t(
+            "docker_provider.created", id: cid[0...16]))
           @machine.id = cid
           @app.call(env)
         end
