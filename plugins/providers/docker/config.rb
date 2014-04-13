@@ -3,6 +3,11 @@ module VagrantPlugins
     class Config < Vagrant.plugin("2", :config)
       attr_accessor :image, :cmd, :ports, :volumes, :privileged
 
+      # True if the Docker container exposes SSH access. If this is true,
+      # then Vagrant can do a bunch more things like setting the hostname,
+      # provisioning, etc.
+      attr_accessor :has_ssh
+
       # The name of the machine in the Vagrantfile set with
       # "vagrant_vagrantfile" that will be the docker host. Defaults
       # to "default"
@@ -27,6 +32,7 @@ module VagrantPlugins
 
       def initialize
         @cmd        = UNSET_VALUE
+        @has_ssh    = UNSET_VALUE
         @image      = UNSET_VALUE
         @ports      = []
         @privileged = UNSET_VALUE
@@ -37,6 +43,7 @@ module VagrantPlugins
 
       def finalize!
         @cmd        = [] if @cmd == UNSET_VALUE
+        @has_ssh    = false if @has_ssh == UNSET_VALUE
         @image      = nil if @image == UNSET_VALUE
         @privileged = false if @privileged == UNSET_VALUE
         @vagrant_machine = nil if @vagrant_machine == UNSET_VALUE
