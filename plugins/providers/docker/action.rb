@@ -9,11 +9,17 @@ module VagrantPlugins
       def self.action_up
         Vagrant::Action::Builder.new.tap do |b|
           b.use ConfigValidate
-          b.use Call, IsState, :not_created do |env, b2|
-            # If the VM is NOT created yet, then do the setup steps
+
+          b.use Call, IsState, :host_state_unknown do |env, b2|
             if env[:result]
               b2.use HandleBox
               b2.use HostMachine
+            end
+          end
+
+          b.use Call, IsState, :not_created do |env, b2|
+            # If the VM is NOT created yet, then do the setup steps
+            if env[:result]
               b2.use EnvSet, :port_collision_repair => true
               b2.use HandleForwardedPortCollisions
 
@@ -36,7 +42,6 @@ module VagrantPlugins
               b2.use Create
               b2.use action_boot
             else
-              b2.use HostMachine
               b2.use PrepareNFSValidIds
               b2.use SyncedFolderCleanup
               b2.use SyncedFolders
